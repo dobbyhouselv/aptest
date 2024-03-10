@@ -1,0 +1,37 @@
+---
+- hosts: localhost
+  connection: local
+  become: true
+
+  tasks:
+  - name: update repo index
+    apt:
+      update_cache: yes
+        
+  - name: install packages
+    package:
+      name:
+        - htop
+        - tmux
+        - vim
+        - curl
+
+  - name: add ansible user
+    user:
+      name: simon
+      system: yes
+
+  - name: set up sudo for ansible user
+    copy:
+      src: files/sudoer_simon
+      dest: /etc/sudoers.d/simon
+      owner: root
+      group: root
+      mode: 0440
+
+  - name: ansible-pull cron job
+    cron:
+      name: ansible auto-provision
+      user: simon
+      minute: "*/10"
+      job: ansible-pull -o -U https://github.com/dobbyhouselv/aptest.git

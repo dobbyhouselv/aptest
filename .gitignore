@@ -1,0 +1,5 @@
+/files/bashrc
+.env*
+
+
+# do not ignore wildcarded
